@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os/exec"
+	"strings"
 	"time"
 	"unsafe"
 )
@@ -62,9 +63,20 @@ func main() {
 	for range ticker.C {
 		currentTime := time.Now().Unix()
 		if currentTime-int64(lastInputTime) >= 3 {
-			cmd := exec.Command("osascript", "-e", `tell application "System Events" to key code {102}`)
-			if err := cmd.Run(); err != nil {
-				fmt.Printf("Failed to execute key code: %v\n", err)
+			// Get current IME mode
+			cmd := exec.Command("im-select")
+			currentIMEMode, err := cmd.Output()
+			if err != nil {
+				fmt.Printf("Failed to get current IME mode: %v\n", err)
+				continue
+			}
+
+			// Switch to English input mode only if current mode is Japanese
+			if strings.TrimSpace(string(currentIMEMode)) == "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese" {
+				cmd = exec.Command("im-select", "com.apple.keylayout.ABC")
+				if err := cmd.Run(); err != nil {
+					fmt.Printf("Failed to switch IME: %v\n", err)
+				}
 			}
 			lastInputTime = C.int64_t(currentTime)
 		}

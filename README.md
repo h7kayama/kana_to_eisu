@@ -1,10 +1,11 @@
 # Kana to Eisu
 
-A keyboard input monitoring tool for macOS that automatically presses the Eisu (English) key when there is no keyboard input for 3 seconds.
+A keyboard input monitoring tool for macOS that automatically switches to English input mode when there is no keyboard input for 3 seconds.
 
 ## Features
 
-- Real-time keyboard input monitoring Automatically presses the Eisu key after 3 seconds of inactivity
+- Real-time keyboard input monitoring
+- Automatically switches to English input mode after 3 seconds of inactivity
 - Efficient background operation
 
 ## Requirements
@@ -12,6 +13,7 @@ A keyboard input monitoring tool for macOS that automatically presses the Eisu (
 - macOS
 - Go 1.21 or higher
 - Accessibility permissions
+- im-select
 
 ## Installation
 
@@ -28,7 +30,13 @@ cd kana_to_eisu
 go mod tidy
 ```
 
-3. Build:
+3. Install im-select:
+
+```zsh
+brew install im-select
+```
+
+4. Build:
 
 ```zsh
 go build -o kana_to_eisu
@@ -48,7 +56,8 @@ go build -o kana_to_eisu
 
 - Uses `CGEventTap` to monitor keyboard input at the system level
 - Detects key presses and modifier key (Shift, Ctrl, etc.) changes
-- Automatically presses the Eisu key (key code 102) after 3 seconds of keyboard inactivity
+- Automatically switches to English input mode after 3 seconds of keyboard inactivity
+- Only switches when the current input mode is Japanese
 
 ## Notes
 
